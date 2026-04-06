@@ -5,7 +5,6 @@
   --panel-border: #cbd5e1;
   --text-light: #e2e8f0;
   --text-dark: #0f172a;
-  --accent: #38bdf8;
   --hp-player: #22c55e;
   --hp-enemy: #f97316;
 }
@@ -78,6 +77,12 @@ body {
   font-weight: 700;
 }
 
+.shield-value {
+  margin: 4px 0 0;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
 #enemy-hp {
   color: var(--hp-enemy);
 }
@@ -123,10 +128,35 @@ body {
   box-shadow: 0 3px 8px rgba(15, 23, 42, 0.18);
   display: grid;
   place-items: center;
+  gap: 8px;
   text-align: center;
   font-weight: 700;
   color: #1e3a8a;
-  white-space: pre-line;
+  cursor: pointer;
+}
+
+.card strong {
+  font-size: 1.2rem;
+}
+
+.card-fire {
+  background: linear-gradient(165deg, #fff1f2, #fecaca);
+}
+
+.card-water {
+  background: linear-gradient(165deg, #ecfeff, #bae6fd);
+}
+
+.card-earth {
+  background: linear-gradient(165deg, #f7fee7, #d9f99d);
+}
+
+.card-thunder {
+  background: linear-gradient(165deg, #fefce8, #fde047);
+}
+
+.card-wind {
+  background: linear-gradient(165deg, #f5f3ff, #ddd6fe);
 }
 
 @media (min-width: 600px) {
