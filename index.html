@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>元素バトル</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="game-screen">
+      <header class="top-area">
+        <h1 class="game-title">元素バトル</h1>
+
+        <div class="hp-row">
+          <section class="hp-panel" aria-label="相手HP">
+            <h2>相手HP</h2>
+            <p id="enemy-hp" class="hp-value">20</p>
+            <p id="enemy-shield" class="shield-value">シールド: 0</p>
+          </section>
+
+          <section class="hp-panel" aria-label="プレイヤーHP">
+            <h2>プレイヤーHP</h2>
+            <p id="player-hp" class="hp-value">20</p>
+            <p id="player-shield" class="shield-value">シールド: 0</p>
+          </section>
+        </div>
+      </header>
+
+      <section class="log-panel" aria-label="ログ">
+        <h2>ログ</h2>
+        <ul id="log-area" class="log-area"></ul>
+      </section>
+
+      <section class="hand-panel" aria-label="手札">
+        <h2>手札（カードをタップ）</h2>
+        <div id="hand-area" class="hand-scroll"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
