@@ -2,27 +2,36 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>元素バトル</title>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <main class="game-container">
-      <h1 class="game-title">元素バトル</h1>
+    <main class="game-screen">
+      <header class="top-area">
+        <h1 class="game-title">元素バトル</h1>
 
-      <section class="panel hp-panel" aria-label="プレイヤーHP">
-        <h2>プレイヤーHP</h2>
-        <p id="player-hp" class="hp-value">100</p>
-      </section>
+        <div class="hp-row">
+          <section class="hp-panel" aria-label="相手HP">
+            <h2>相手HP</h2>
+            <p id="enemy-hp" class="hp-value">100</p>
+          </section>
 
-      <section class="panel hand-panel" aria-label="手札">
-        <h2>手札</h2>
-        <div id="hand-area" class="hand-area"></div>
-      </section>
+          <section class="hp-panel" aria-label="プレイヤーHP">
+            <h2>プレイヤーHP</h2>
+            <p id="player-hp" class="hp-value">100</p>
+          </section>
+        </div>
+      </header>
 
-      <section class="panel log-panel" aria-label="ログ">
+      <section class="log-panel" aria-label="ログ">
         <h2>ログ</h2>
         <ul id="log-area" class="log-area"></ul>
+      </section>
+
+      <section class="hand-panel" aria-label="手札">
+        <h2>手札</h2>
+        <div id="hand-area" class="hand-scroll"></div>
       </section>
     </main>
 
