@@ -20,6 +20,7 @@ const gameState = {
   turn: 1,
   currentTurn: "player",
   hasPlayedCardThisTurn: false,
+  resultMessage: "",
 };
 
 function randomInt(min, max) {
@@ -59,6 +60,11 @@ function renderTurnStatus() {
 
   const endTurnButton = document.getElementById("end-turn-button");
   endTurnButton.disabled = gameState.isBattleEnd || gameState.currentTurn !== "player";
+}
+
+
+function renderResult() {
+  document.getElementById("result-text").textContent = gameState.resultMessage;
 }
 
 function addLog(message) {
@@ -123,12 +129,16 @@ function processCardEffect(cardData, actor) {
 function checkBattleEnd() {
   if (gameState.enemyHp <= 0) {
     gameState.isBattleEnd = true;
+    gameState.resultMessage = "🎉 勝利！";
     addLog("勝利！相手を倒しました。");
+    renderResult();
     return true;
   }
   if (gameState.playerHp <= 0) {
     gameState.isBattleEnd = true;
+    gameState.resultMessage = "💀 敗北...";
     addLog("敗北…プレイヤーHPが0になりました。");
+    renderResult();
     return true;
   }
   return false;
@@ -216,6 +226,7 @@ function initGame() {
   document.getElementById("end-turn-button").addEventListener("click", endTurn);
 
   renderStatus();
+  renderResult();
   addLog("バトル開始！1ターンに1枚だけカードを使えます。");
   startPlayerTurn();
 }
