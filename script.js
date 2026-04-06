@@ -15,6 +15,7 @@ const gameState = {
   enemySkipTurn: false,
   playerSkipTurn: false,
   hand: [],
+  enemyHand: [],
   isBattleEnd: false,
   turn: 1,
   currentTurn: "player",
@@ -137,17 +138,15 @@ function startPlayerTurn() {
   gameState.currentTurn = "player";
   gameState.hasPlayedCardThisTurn = false;
 
+  addLog("プレイヤーターン開始。カードを1枚ドロー。");
+  gameState.hand.push(createRandomCard());
+
   if (gameState.playerSkipTurn) {
     gameState.playerSkipTurn = false;
     gameState.hasPlayedCardThisTurn = true;
     addLog("風の効果でプレイヤーターンをスキップ！");
-    renderTurnStatus();
-    renderHand();
-    return;
   }
 
-  gameState.hand.push(createRandomCard());
-  addLog("プレイヤーターン開始：カードを1枚ドロー。");
   renderTurnStatus();
   renderHand();
 }
@@ -155,6 +154,9 @@ function startPlayerTurn() {
 function runEnemyTurn() {
   gameState.currentTurn = "enemy";
   renderTurnStatus();
+  addLog("相手ターン開始。");
+
+  gameState.enemyHand.push(createRandomCard());
 
   if (gameState.enemySkipTurn) {
     gameState.enemySkipTurn = false;
@@ -162,7 +164,9 @@ function runEnemyTurn() {
     return;
   }
 
-  const enemyCard = createRandomCard();
+  const randomIndex = randomInt(0, gameState.enemyHand.length - 1);
+  const [enemyCard] = gameState.enemyHand.splice(randomIndex, 1);
+
   addLog(`相手が${CARD_LABEL[enemyCard.type]}${enemyCard.value}を使用。`);
   processCardEffect(enemyCard, "enemy");
 }
@@ -207,6 +211,7 @@ function endTurn() {
 
 function initGame() {
   gameState.hand = Array.from({ length: 4 }, () => createRandomCard());
+  gameState.enemyHand = Array.from({ length: 4 }, () => createRandomCard());
 
   document.getElementById("end-turn-button").addEventListener("click", endTurn);
 
