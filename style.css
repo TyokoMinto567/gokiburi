@@ -47,6 +47,34 @@ body {
   letter-spacing: 0.04em;
 }
 
+
+.turn-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.turn-status {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.end-turn-button {
+  border: 1px solid #0369a1;
+  background: #0ea5e9;
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.end-turn-button:disabled {
+  opacity: 0.5;
+}
+
 .hp-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -133,6 +161,11 @@ body {
   font-weight: 700;
   color: #1e3a8a;
   cursor: pointer;
+}
+
+.card:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
 
 .card strong {

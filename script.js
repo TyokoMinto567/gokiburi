@@ -15,7 +15,11 @@ const gameState = {
   enemySkipTurn: false,
   playerSkipTurn: false,
   hand: [],
+  enemyHand: [],
   isBattleEnd: false,
+  turn: 1,
+  currentTurn: "player",
+  hasPlayedCardThisTurn: false,
 };
 
 function randomInt(min, max) {
@@ -49,6 +53,14 @@ function renderStatus() {
   document.getElementById("enemy-shield").textContent = `シールド: ${gameState.enemyShield}`;
 }
 
+function renderTurnStatus() {
+  const turnText = gameState.currentTurn === "player" ? "プレイヤー" : "相手";
+  document.getElementById("turn-status").textContent = `ターン${gameState.turn} / ${turnText}ターン`;
+
+  const endTurnButton = document.getElementById("end-turn-button");
+  endTurnButton.disabled = gameState.isBattleEnd || gameState.currentTurn !== "player";
+}
+
 function addLog(message) {
   const logArea = document.getElementById("log-area");
   const logItem = document.createElement("li");
@@ -64,6 +76,7 @@ function renderHand() {
     const cardButton = document.createElement("button");
     cardButton.className = `card card-${cardData.type}`;
     cardButton.type = "button";
+    cardButton.disabled = gameState.isBattleEnd || gameState.currentTurn !== "player" || gameState.hasPlayedCardThisTurn;
     cardButton.innerHTML = `<span>${CARD_LABEL[cardData.type]}</span><strong>${cardData.value}</strong>`;
     cardButton.addEventListener("click", () => handlePlayerCard(index));
     handArea.appendChild(cardButton);
@@ -121,54 +134,90 @@ function checkBattleEnd() {
   return false;
 }
 
-function enemyTurn() {
-  if (gameState.isBattleEnd) {
-    return;
-  }
+function startPlayerTurn() {
+  gameState.currentTurn = "player";
+  gameState.hasPlayedCardThisTurn = false;
 
-  if (gameState.enemySkipTurn) {
-    addLog("風の効果で相手ターンをスキップ！");
-    gameState.enemySkipTurn = false;
-    return;
-  }
-
-  const enemyCard = createRandomCard();
-  processCardEffect(enemyCard, "enemy");
-  checkBattleEnd();
-}
-
-function handlePlayerCard(index) {
-  if (gameState.isBattleEnd) {
-    return;
-  }
+  addLog("プレイヤーターン開始。カードを1枚ドロー。");
+  gameState.hand.push(createRandomCard());
 
   if (gameState.playerSkipTurn) {
     gameState.playerSkipTurn = false;
+    gameState.hasPlayedCardThisTurn = true;
     addLog("風の効果でプレイヤーターンをスキップ！");
-    enemyTurn();
-    renderStatus();
-    renderHand();
+  }
+
+  renderTurnStatus();
+  renderHand();
+}
+
+function runEnemyTurn() {
+  gameState.currentTurn = "enemy";
+  renderTurnStatus();
+  addLog("相手ターン開始。");
+
+  gameState.enemyHand.push(createRandomCard());
+
+  if (gameState.enemySkipTurn) {
+    gameState.enemySkipTurn = false;
+    addLog("風の効果で相手ターンをスキップ！");
+    return;
+  }
+
+  const randomIndex = randomInt(0, gameState.enemyHand.length - 1);
+  const [enemyCard] = gameState.enemyHand.splice(randomIndex, 1);
+
+  addLog(`相手が${CARD_LABEL[enemyCard.type]}${enemyCard.value}を使用。`);
+  processCardEffect(enemyCard, "enemy");
+}
+
+function handlePlayerCard(index) {
+  if (
+    gameState.isBattleEnd ||
+    gameState.currentTurn !== "player" ||
+    gameState.hasPlayedCardThisTurn ||
+    gameState.playerSkipTurn
+  ) {
     return;
   }
 
   const [selected] = gameState.hand.splice(index, 1);
   processCardEffect(selected, "player");
-
-  gameState.hand.push(createRandomCard());
-
-  if (!checkBattleEnd()) {
-    enemyTurn();
-  }
+  gameState.hasPlayedCardThisTurn = true;
 
   renderStatus();
+  checkBattleEnd();
   renderHand();
+  renderTurnStatus();
+}
+
+function endTurn() {
+  if (gameState.isBattleEnd || gameState.currentTurn !== "player") {
+    return;
+  }
+
+  runEnemyTurn();
+  renderStatus();
+
+  if (!checkBattleEnd()) {
+    gameState.turn += 1;
+    startPlayerTurn();
+    renderStatus();
+  }
+
+  renderHand();
+  renderTurnStatus();
 }
 
 function initGame() {
-  gameState.hand = Array.from({ length: 5 }, () => createRandomCard());
+  gameState.hand = Array.from({ length: 4 }, () => createRandomCard());
+  gameState.enemyHand = Array.from({ length: 4 }, () => createRandomCard());
+
+  document.getElementById("end-turn-button").addEventListener("click", endTurn);
+
   renderStatus();
-  renderHand();
-  addLog("バトル開始！カードを1枚タップしてください。");
+  addLog("バトル開始！1ターンに1枚だけカードを使えます。");
+  startPlayerTurn();
 }
 
 window.addEventListener("DOMContentLoaded", initGame);
