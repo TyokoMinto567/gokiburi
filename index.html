@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>元素バトル</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="game-container">
+      <h1 class="game-title">元素バトル</h1>
+
+      <section class="panel hp-panel" aria-label="プレイヤーHP">
+        <h2>プレイヤーHP</h2>
+        <p id="player-hp" class="hp-value">100</p>
+      </section>
+
+      <section class="panel hand-panel" aria-label="手札">
+        <h2>手札</h2>
+        <div id="hand-area" class="hand-area"></div>
+      </section>
+
+      <section class="panel log-panel" aria-label="ログ">
+        <h2>ログ</h2>
+        <ul id="log-area" class="log-area"></ul>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
