@@ -33,6 +33,7 @@ body {
   grid-template-rows: auto 1fr auto;
   gap: 12px;
   padding: max(12px, env(safe-area-inset-top)) 12px max(12px, env(safe-area-inset-bottom));
+  position: relative;
 }
 
 .top-area {
@@ -136,6 +137,7 @@ body {
 .log-area {
   margin: 0;
   padding-left: 18px;
+  height: 150px;
   overflow-y: auto;
   font-size: 0.9rem;
   line-height: 1.5;
@@ -198,6 +200,51 @@ body {
 
 .card-wind {
   background: linear-gradient(165deg, #f5f3ff, #ddd6fe);
+}
+
+/* 追加: エフェクトの表示位置（中央寄り右） */
+.effect-layer {
+  position: absolute;
+  top: 50%;
+  right: 14%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  z-index: 20;
+}
+
+/* 追加: ダメージ/回復演出（300ms遅延 + 1秒で上昇しながら消える） */
+.effect-item {
+  position: absolute;
+  right: 0;
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  animation: float-fade 1s ease-out 0.3s forwards;
+}
+
+.effect-item.damage {
+  color: #ef4444;
+}
+
+.effect-item.heal {
+  color: #a3e635;
+}
+
+@keyframes float-fade {
+  from {
+    transform: translateY(0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-38px);
+    opacity: 0;
+  }
 }
 
 @media (min-width: 600px) {

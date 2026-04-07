@@ -67,11 +67,24 @@ function renderResult() {
   document.getElementById("result-text").textContent = gameState.resultMessage;
 }
 
+function showEffect(text, type) {
+  const effectLayer = document.getElementById("effect-layer");
+  const effectItem = document.createElement("span");
+  effectItem.className = `effect-item ${type}`;
+  effectItem.textContent = text;
+  effectLayer.appendChild(effectItem);
+
+  setTimeout(() => {
+    effectItem.remove();
+  }, 1300);
+}
+
 function addLog(message) {
   const logArea = document.getElementById("log-area");
   const logItem = document.createElement("li");
   logItem.textContent = message;
-  logArea.prepend(logItem);
+  logArea.appendChild(logItem);
+  logArea.scrollTop = logArea.scrollHeight;
 }
 
 function renderHand() {
@@ -101,6 +114,7 @@ function processCardEffect(cardData, actor) {
       `${CARD_LABEL[cardData.type]}${cardData.value} → ${isPlayer ? "相手" : "プレイヤー"}に${cardData.value}ダメージ` +
         (blocked > 0 ? `（シールド${blocked}吸収 / HP-${hpDamage}）` : ``),
     );
+    showEffect(`-${cardData.value}`, "damage");
     return;
   }
 
@@ -108,6 +122,7 @@ function processCardEffect(cardData, actor) {
     const hpKey = isPlayer ? "playerHp" : "enemyHp";
     gameState[hpKey] = Math.min(20, gameState[hpKey] + cardData.value);
     addLog(`${CARD_LABEL.water}${cardData.value} → ${subject}のHP+${cardData.value}`);
+    showEffect(`+${cardData.value}`, "heal");
     return;
   }
 
