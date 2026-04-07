@@ -7,6 +7,15 @@ const CARD_LABEL = {
   wind: "風",
 };
 
+// 変更①: カード出現率を確率ベースで定義
+const CARD_WEIGHTS = [
+  { type: "fire", weight: 30 },
+  { type: "thunder", weight: 25 },
+  { type: "water", weight: 20 },
+  { type: "earth", weight: 15 },
+  { type: "wind", weight: 10 },
+];
+
 const gameState = {
   playerHp: 20,
   enemyHp: 20,
@@ -28,9 +37,23 @@ function randomInt(min, max) {
 }
 
 function createRandomCard() {
+  // 変更①: 重み付き乱数でカード種別を決定
+  const roll = randomInt(1, 100);
+  let cumulative = 0;
+  let selectedType = "wind";
+
+  for (const entry of CARD_WEIGHTS) {
+    cumulative += entry.weight;
+    if (roll <= cumulative) {
+      selectedType = entry.type;
+      break;
+    }
+  }
+
+  // 変更②: windはvalueを持たない（0固定）
   return {
-    type: CARD_POOL[randomInt(0, CARD_POOL.length - 1)],
-    value: randomInt(1, 4),
+    type: selectedType,
+    value: selectedType === "wind" ? 0 : randomInt(1, 4),
   };
 }
 
@@ -96,7 +119,11 @@ function renderHand() {
     cardButton.className = `card card-${cardData.type}`;
     cardButton.type = "button";
     cardButton.disabled = gameState.isBattleEnd || gameState.currentTurn !== "player" || gameState.hasPlayedCardThisTurn;
-    cardButton.innerHTML = `<span>${CARD_LABEL[cardData.type]}</span><strong>${cardData.value}</strong>`;
+    // 変更③: windカードは数値を表示しない
+    cardButton.innerHTML =
+      cardData.type === "wind"
+        ? `<span>${CARD_LABEL[cardData.type]}</span>`
+        : `<span>${CARD_LABEL[cardData.type]}</span><strong>${cardData.value}</strong>`;
     cardButton.addEventListener("click", () => handlePlayerCard(index));
     handArea.appendChild(cardButton);
   });
@@ -138,7 +165,7 @@ function processCardEffect(cardData, actor) {
   } else {
     gameState.playerSkipTurn = true;
   }
-  addLog(`${CARD_LABEL.wind}${cardData.value} → ${isPlayer ? "相手" : "プレイヤー"}の次ターンスキップ`);
+  addLog(`${CARD_LABEL.wind} → ${isPlayer ? "相手" : "プレイヤー"}の次ターンスキップ`);
 }
 
 function checkBattleEnd() {
@@ -192,7 +219,7 @@ function runEnemyTurn() {
   const randomIndex = randomInt(0, gameState.enemyHand.length - 1);
   const [enemyCard] = gameState.enemyHand.splice(randomIndex, 1);
 
-  addLog(`相手が${CARD_LABEL[enemyCard.type]}${enemyCard.value}を使用。`);
+  addLog(`相手が${CARD_LABEL[enemyCard.type]}${enemyCard.type === "wind" ? "" : enemyCard.value}を使用。`);
   processCardEffect(enemyCard, "enemy");
 }
 
